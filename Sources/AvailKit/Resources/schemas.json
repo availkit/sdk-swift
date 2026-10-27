@@ -1,0 +1,242 @@
+{
+  "Availability": {
+    "type": "object",
+    "properties": {
+      "slots": {
+        "type": "array",
+        "maxItems": 256,
+        "items": {
+          "type": "object",
+          "properties": {
+            "start": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "end": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "remainingCapacity": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "start",
+            "end",
+            "remainingCapacity"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": [
+      "slots"
+    ],
+    "additionalProperties": false
+  },
+  "RescheduleInput": {
+    "type": "object",
+    "properties": {
+      "expectedStart": {
+        "type": "string",
+        "format": "date-time",
+        "description": "UTC RFC3339 instant with millisecond precision or coarser"
+      },
+      "start": {
+        "type": "string",
+        "format": "date-time",
+        "description": "UTC RFC3339 instant with millisecond precision or coarser"
+      }
+    },
+    "required": [
+      "expectedStart",
+      "start"
+    ],
+    "additionalProperties": false
+  },
+  "CustomerInput": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "displayName"
+    ],
+    "properties": {
+      "displayName": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 160
+      },
+      "email": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "maxLength": 254
+      },
+      "phone": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "maxLength": 32
+      }
+    }
+  },
+  "Empty": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  },
+  "PublicPage": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{32}$"
+      },
+      "title": {
+        "type": "string"
+      },
+      "environment": {
+        "type": "string",
+        "enum": [
+          "test",
+          "live"
+        ]
+      },
+      "emailNotifications": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "title",
+      "environment"
+    ]
+  },
+  "PublicOfferingPage": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "items": {
+        "type": "array",
+        "maxItems": 100,
+        "items": {
+          "$ref": "#/components/schemas/PublicOffering"
+        }
+      },
+      "nextAfter": {
+        "anyOf": [
+          {
+            "type": "string",
+            "pattern": "^[0-9a-f]{32}$"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "required": [
+      "items",
+      "nextAfter"
+    ]
+  },
+  "PublicOffering": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{32}$"
+      },
+      "name": {
+        "type": "string"
+      },
+      "durationMinutes": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1440
+      },
+      "timeZone": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "id",
+      "name",
+      "durationMinutes",
+      "timeZone"
+    ]
+  },
+  "PublicBookingInput": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "offeringId": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{32}$"
+      },
+      "start": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "Z$"
+      },
+      "contact": {
+        "$ref": "#/components/schemas/CustomerInput"
+      }
+    },
+    "required": [
+      "offeringId",
+      "start",
+      "contact"
+    ]
+  },
+  "PublicBooking": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{32}$"
+      },
+      "start": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "Z$"
+      },
+      "end": {
+        "type": "string",
+        "format": "date-time",
+        "pattern": "Z$"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "confirmed",
+          "cancelled"
+        ]
+      },
+      "offering": {
+        "$ref": "#/components/schemas/PublicOffering"
+      },
+      "page": {
+        "$ref": "#/components/schemas/PublicPage"
+      },
+      "pageEnabled": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "start",
+      "end",
+      "status",
+      "offering",
+      "page",
+      "pageEnabled"
+    ]
+  }
+}
